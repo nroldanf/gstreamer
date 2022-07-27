@@ -1,28 +1,34 @@
 #!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-# GStreamer SDK Tutorials in Python
-#
-#     basic-tutorial-1
-#
-"""
-basic-tutorial-1: Hello world!
-http://docs.gstreamer.com/display/GstSDK/Basic+tutorial+2%3A+GStreamer+concepts
-"""
+import sys
 
-from gi.repository import Gst
-Gst.init(None)
+import gi
 
-# Build the pipeline
+gi.require_version('GLib', '2.0')
+gi.require_version('GObject', '2.0')
+gi.require_version('Gst', '1.0')
+
+from gi.repository import Gst, GObject, GLib
+
+pipeline = None
+bus = None
+message = None
+
+# initialize GStreamer
+Gst.init(sys.argv[1:])
+
+# build the pipeline
 pipeline = Gst.parse_launch(
-    "playbin uri=http://docs.gstreamer.com/media/sintel_trailer-480p.webm")
+    "playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm"
+)
 
-# Start playing
+# start playing
 pipeline.set_state(Gst.State.PLAYING)
 
-# Wait until error or EOS
+# wait until EOS or error
 bus = pipeline.get_bus()
 msg = bus.timed_pop_filtered(
-    Gst.CLOCK_TIME_NONE, Gst.MessageType.ERROR | Gst.MessageType.EOS)
-
-# Free resources
+    Gst.CLOCK_TIME_NONE,
+    Gst.MessageType.ERROR | Gst.MessageType.EOS
+)
+# free resources
 pipeline.set_state(Gst.State.NULL)
