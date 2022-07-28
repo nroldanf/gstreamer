@@ -14,11 +14,13 @@ bus = None
 message = None
 
 # initialize GStreamer
+#   check for plugins, and initializes structures
 Gst.init(sys.argv[1:])
 
 # build the pipeline
+#   takes textual representation of a pipeline and turns it into a pipeline
 pipeline = Gst.parse_launch(
-    "playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm"
+    "playbin uri=https://s52.nysdot.skyvdn.com:443/rtplive/R11_242/playlist.m3u8"
 )
 
 # start playing
